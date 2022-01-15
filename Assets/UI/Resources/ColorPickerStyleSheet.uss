@@ -1,0 +1,118 @@
+.color-picker {
+   
+}
+
+.color-picker__content-area {
+   flex-grow: 0;
+   width: 100%;
+   background-color: var(--color-back-lit);
+}
+
+.color-picker .unity-slider {
+   padding: 0;
+}
+
+.color-picker__red-slider .unity-base-slider__dragger,
+.color-picker__red-slider .unity-base-slider__dragger:hover,
+.color-picker__red-slider:focus .unity-base-slider__dragger,
+.color-picker__red-slider .unity-base-slider__tracker-fill {
+   background-color: red;
+   border-color: rgba(0, 255, 255, 255);
+}
+
+.color-picker__red-slider .unity-base-text-field__input,
+.color-picker__green-slider .unity-base-text-field__input,
+.color-picker__blue-slider .unity-base-text-field__input{
+	background-color: rgb(34, 32, 52);
+	padding: 1px 1px 1px 1px;
+	color: rgb(255, 255, 255);
+	border-width: 1px;
+	border-radius: 0px;
+	border-color: rgb(0, 255, 255);
+}
+
+.color-picker__green-slider .unity-base-slider__dragger,
+.color-picker__green-slider .unity-base-slider__dragger:hover,
+.color-picker__green-slider:focus .unity-base-slider__dragger,
+.color-picker__green-slider .unity-base-slider__tracker-fill {
+   background-color: green;
+   border-color: rgba(0, 255, 255, 255);
+}
+
+.color-picker__blue-slider .unity-base-slider__dragger,
+.color-picker__blue-slider .unity-base-slider__dragger:hover,
+.color-picker__blue-slider:focus .unity-base-slider__dragger,
+.color-picker__blue-slider .unity-base-slider__tracker-fill {
+   background-color: blue;
+   border-color: rgba(0, 255, 255, 255);
+}
+
+.color-picker__gradient-area {
+   flex-direction: row;
+   flex-grow: 1;
+   margin: 0px 0px 2px 0px;
+}
+
+.color-picker__gradient-slider {
+   flex-grow: 0;
+   width: 128px;
+   height: 128px;
+   border-width: 1px;
+   border-color: rgba(0, 255, 255, 255);
+   background-color: black;
+}
+
+.color-picker__gradient-slider .slider-2d__dragger {
+   width: 30px;
+   height: 30px;
+   border-width: 1px;
+   border-radius: 15px;
+   border-color: rgba(0, 255, 255, 255);
+   background-color: red;
+}
+
+.color-picker__gradient-slider .slider-2d__dragger-border {
+   background-color: rgba(255, 255, 255, 255);
+}
+
+.color-picker__hue-slider {
+   overflow: visible;
+   width: 25px;
+   height: 128px;
+   margin: 1px 3px 1px 5px;
+   border-width: 1px;
+   border-color: rgba(0, 255, 255, 255);
+   background-color: black;
+}
+
+.color-picker__hue-slider .unity-base-slider__drag-container {
+   margin-left: 0px;
+   width: 100%;
+   height: 100%;
+}
+
+.color-picker__hue-slider .unity-base-slider__tracker {
+   background-color: transparent;
+}
+
+.color-picker__hue-slider .unity-base-slider__dragger,
+.color-picker__hue-slider .unity-base-slider__dragger:hover,
+.color-picker__hue-slider:focus .unity-base-slider__dragger {
+   width: 33px;
+   height: 6px;
+   left: -5px;
+   margin: 0 0 0 0;
+   border-radius: 0;
+   border-width: 1px;
+   border-color: rgba(0, 255, 255, 255);
+   background-color: red;
+}
+
+.color-picker__hue-slider .unity-base-slider__dragger-border,
+.color-picker__hue-slider:focus .unity-base-slider__dragger-border {
+   width: 25px;
+   height: 12px;
+   border-radius: 0px;
+   background-color: rgba(0, 255, 255, 255);
+} 
+

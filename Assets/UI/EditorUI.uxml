@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement style="flex-direction: row; flex-shrink: 1; flex-wrap: nowrap; justify-content: space-between; align-items: stretch; width: 100%; height: 100%;">
+        <ui:VisualElement style="height: 100%; width: 25%; align-items: stretch; justify-content: flex-start; left: 0; top: 0; right: 0; bottom: 0; overflow: visible; background-image: url(&apos;/Assets/test9patch.png&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4; max-width: 500px; min-width: 128px; max-height: 100%; min-height: 100%;">
+            <ui:Button text="Button" display-tooltip-when-elided="true" style="height: 19px; width: 114px;" />
+            <Game.UI.ColorPicker />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-direction: column; align-items: stretch; justify-content: flex-start; width: 25%; background-image: url(&apos;/Assets/test9patch.png&apos;); -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4;">
+            <ui:Toggle label="Toggle" style="flex-wrap: nowrap;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
