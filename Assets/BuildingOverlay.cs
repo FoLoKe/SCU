@@ -1,3 +1,4 @@
+using Assets.BlueprintUtils;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,7 +55,7 @@ public class BuildingOverlay : MonoBehaviour
         {
             for (int y = 0; y < Blueprint.sizeY; y++) 
             {
-                BlueprintComponent.Cell cell = Blueprint.Cells[x, y];
+                Cell cell = Blueprint.bp.cells[x, y];
                 if (cell != null)
                 {
                     if (lockBorder && cell.state != 15 

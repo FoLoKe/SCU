@@ -38,7 +38,6 @@ namespace Game.UI
 			AddToClassList(ussFieldName);
 
 			var baseField = base.ElementAt(0);
-			Debug.Log(baseField);
 
 			dragBorderElement = new VisualElement() { name = "dragger-border", pickingMode = PickingMode.Ignore };
 			dragBorderElement.AddToClassList(ussDraggerBorder);
@@ -52,6 +51,12 @@ namespace Game.UI
 			dragger = new DragManipulator(OnDraggerClicked, OnDraggerDragged);
 			pickingMode = PickingMode.Position;
 			this.AddManipulator(dragger);
+		}
+
+		public void FitParent()
+        {
+			this.style.height = this.style.width;
+			UpdateDraggerPosition();
 		}
 
 		public override void SetValueWithoutNotify(Vector2 newValue)

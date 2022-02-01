@@ -1,43 +1,57 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraControlls : MonoBehaviour
 {
-    private Vector3 _initialPos;
+    public PlayerInput PlayerInput;
+
+    private InputAction rightClickInput;
+    private InputAction zoomInput;
+
+    private Vector2 _initialPos;
     private bool _isDragging;
 
     public float MinZoom = 0.25f;
     public float MaxZoom = 3f;
-    public float MaxOffset = 10; 
+    public float MaxOffset = 10;
+
+    private float zoom = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        rightClickInput = PlayerInput.actions["RightClick"];
+        zoomInput = PlayerInput.actions["zoom"];
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (rightClickInput.WasPressedThisFrame())
         {
             _isDragging = true;
-            _initialPos = Input.mousePosition;
-        } 
+            var pos = Pointer.current.position;
+            _initialPos.Set(pos.x.ReadValue(), pos.y.ReadValue());
+        }
 
-        if (Input.GetMouseButtonUp(1)) 
+        if (rightClickInput.WasReleasedThisFrame())
         {
             _isDragging = false;
         }
+
+        
+        
+        zoom = zoomInput.ReadValue<float>() * 0.005f;
     }
 
     private void FixedUpdate() {
+        Debug.Log(Mouse.current.scroll.ReadValue().y);
         var position = transform.localPosition;
 
         if (_isDragging)
         {
-            var dragPos = Input.mousePosition;
+            var pos = Pointer.current.position;
+            var dragPos = new Vector2(pos.x.ReadValue(), pos.y.ReadValue());
 
             var offset = _initialPos - dragPos;
             _initialPos = dragPos;
@@ -48,7 +62,6 @@ public class CameraControlls : MonoBehaviour
             position.y = Mathf.Clamp(position.y + offset.y / 1000f * -position.z, -MaxOffset, MaxOffset);
         }
 
-        var zoom = Input.mouseScrollDelta.y * 0.5f;
         position.z = Mathf.Clamp(position.z + zoom * 0.25f, -MaxZoom, -MinZoom);
 
         transform.localPosition = position;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.Events;
 
 namespace Game.UI
 {
@@ -8,6 +9,14 @@ namespace Game.UI
 	{
 		[UnityEngine.Scripting.Preserve]
 		public new class UxmlFactory : UxmlFactory<ColorPicker, UxmlTraits> { }
+		public new class UxmlTraits : VisualElement.UxmlTraits
+		{
+			public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
+			{
+				get { yield return new UxmlChildElementDescription(typeof(VisualElement)); }
+			}
+		}
+
 
 		private float H, S, V = 1.0f;
 
@@ -18,6 +27,8 @@ namespace Game.UI
 		private Slider hueSlider;
 		private VisualElement gradientSliderDragger;
 		private VisualElement hueSliderDragger;
+
+		private VisualElement controlsContainter;
 
 		private Texture2D gradientTexture;
 		private Texture2D hueSliderTexture;
@@ -32,8 +43,38 @@ namespace Game.UI
 		private const string ussGradientSlider = ussPickerClassName + "__gradient-slider";
 		private const string ussHueSlider = ussPickerClassName + "__hue-slider";
 
+		public UnityEvent colorChangeEvent;
+
+		public Color Color 
+		{ 
+			get 
+			{
+				var c = Color.HSVToRGB(H, S, V);
+				c.a = 255;
+				return c;
+			} 
+			set 
+			{
+				Color.RGBToHSV(value, out H, out S, out V);
+				OnColorChanged(true, true);
+			}
+		}
+
+		public override VisualElement contentContainer
+		{
+			get
+			{
+				return controlsContainter;
+			}
+		}
+
 		public ColorPicker()
 		{
+			if(colorChangeEvent == null)
+            {
+				colorChangeEvent = new UnityEvent();
+            }
+
 			styleSheets.Add(Resources.Load<StyleSheet>(pickerStylesResource));
 
 			// panel
@@ -47,10 +88,16 @@ namespace Game.UI
 			// gradient area
 			var gradientArea = new VisualElement();
 			gradientArea.AddToClassList(ussGradientArea);
+			gradientArea.style.width = Length.Percent(100);
+			gradientArea.style.alignContent = Align.Center;
+			gradientArea.style.justifyContent = Justify.Center;
+
 			content.Add(gradientArea);
 
 			// gradient block
 			gradientSlider = new Slider2D();
+			gradientArea.name = "unity-content";
+
 			gradientSliderDragger = gradientSlider.Q("dragger");
 			gradientSlider.AddToClassList(ussGradientSlider);
 			gradientArea.Add(gradientSlider);
@@ -61,10 +108,17 @@ namespace Game.UI
 			hueSlider.AddToClassList(ussHueSlider);
 			gradientArea.Add(hueSlider);
 
+			controlsContainter = new VisualElement();
+			controlsContainter.style.justifyContent = Justify.SpaceBetween;
+			controlsContainter.style.flexDirection = FlexDirection.Column;
+			controlsContainter.style.alignItems = Align.Stretch;
+
+			gradientArea.Add(controlsContainter);
+
 			// rgb sliders
-			rSlider = new Slider(0f, 255f, SliderDirection.Horizontal, 0f);
-			gSlider = new Slider(0f, 255f, SliderDirection.Horizontal, 0f);
-			bSlider = new Slider(0f, 255f, SliderDirection.Horizontal, 0f);
+			rSlider = new Slider();
+			gSlider = new Slider();
+			bSlider = new Slider();
 
 			rSlider.showInputField = true;
 			gSlider.showInputField = true;
@@ -88,16 +142,6 @@ namespace Game.UI
 			Color.RGBToHSV(color, out H, out S, out V);
 			CreateTextures();
 			OnColorChanged(true, true);
-		}
-
-		// ------------------------------------------------------------------------------------------------------------
-
-		private Color GetColor()
-		{
-			var c = Color.HSVToRGB(H, S, V);
-			c.a = 255;
-
-			return c;
 		}
 
 		private void SetColorFromGradientSlider(ChangeEvent<Vector2> ev)
@@ -159,6 +203,8 @@ namespace Game.UI
 				UpdateGradientTexture();
 				gradientSlider.SetValueWithoutNotify(new Vector2(S, V));
 			}
+
+			colorChangeEvent.Invoke();
 		}
 
 		private void CreateTextures()
@@ -184,7 +230,7 @@ namespace Game.UI
 			hueSliderTexture.Apply();
 			hueSlider.MarkDirtyRepaint();
 		}
-
+		
 		private void UpdateGradientTexture()
 		{
 			if (gradientTexture == null) return;
@@ -198,19 +244,9 @@ namespace Game.UI
 				}
 			}
 
-			Debug.Log("redraw");
-
 			gradientTexture.SetPixels(pixels);
 			gradientTexture.Apply();
 			gradientSlider.MarkDirtyRepaint();
 		}
-
-		private static float Round(float value, int digits)
-		{
-			float mult = Mathf.Pow(10.0f, digits);
-			return Mathf.Round(value * mult) / mult;
-		}
-
-		// ============================================================================================================
 	}
 }

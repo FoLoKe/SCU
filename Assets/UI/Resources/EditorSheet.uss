@@ -1,0 +1,45 @@
+.unity-button {
+}
+
+.unity-label {
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+.scu-button:hover {
+    border-left-color: rgb(162, 250, 255);
+    border-right-color: rgb(162, 250, 255);
+    border-top-color: rgb(162, 250, 255);
+    border-bottom-color: rgb(162, 250, 255);
+}
+
+.scu-button {
+    flex-direction: row;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100%;
+    background-image: url('project://database/Assets/test9patch.png?fileID=2800000&guid=d07c6293003c91a408f634dfc55cb702&type=3#test9patch');
+    -unity-slice-left: 9;
+    -unity-slice-top: 9;
+    -unity-slice-right: 9;
+    -unity-slice-bottom: 9;
+    -unity-background-scale-mode: stretch-to-fill;
+    border-width: 3px;
+    border-radius: 0;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    margin: 1px;
+    padding: 0;
+    color: rgb(255, 255, 255);
+}
+
+.scu-button:focus {
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+}

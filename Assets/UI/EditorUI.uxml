@@ -1,11 +1,66 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <ui:VisualElement style="flex-direction: row; flex-shrink: 1; flex-wrap: nowrap; justify-content: space-between; align-items: stretch; width: 100%; height: 100%;">
-        <ui:VisualElement style="height: 100%; width: 25%; align-items: stretch; justify-content: flex-start; left: 0; top: 0; right: 0; bottom: 0; overflow: visible; background-image: url(&apos;/Assets/test9patch.png&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4; max-width: 500px; min-width: 128px; max-height: 100%; min-height: 100%;">
-            <ui:Button text="Button" display-tooltip-when-elided="true" style="height: 19px; width: 114px;" />
-            <Game.UI.ColorPicker />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Resources/EditorSheet.uss?fileID=7433441132597879392&amp;guid=ffcf885b343feeb4d9c8336627944452&amp;type=3#EditorSheet" />
+    <ui:VisualElement picking-mode="Ignore" style="width: 100%; height: 100%; justify-content: space-around; flex-direction: column; display: flex;">
+        <ui:VisualElement style="width: 100%; height: 82px; flex-shrink: 0; flex-grow: 0; flex-direction: row; display: flex; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 9; -unity-slice-top: 9; -unity-slice-right: 9; -unity-slice-bottom: 9; padding-left: 8px; padding-right: 8px; padding-top: 5px; padding-bottom: 8px; justify-content: space-between;">
+            <ui:VisualElement style="flex-direction: row; flex-wrap: wrap;">
+                <ui:Button display-tooltip-when-elided="true" focusable="false" name="Save" class="scu-button" style="display: flex; width: 64px; height: 64px;">
+                    <ui:VisualElement style="background-image: url(&apos;project://database/Assets/save.png?fileID=2800000&amp;guid=0f12119de170bf1438cb028cb1ff0710&amp;type=3#save&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+                </ui:Button>
+                <ui:Button display-tooltip-when-elided="true" focusable="false" name="Load" class="scu-button" style="width: 64px; height: 64px;">
+                    <ui:VisualElement style="background-image: url(&apos;project://database/Assets/load.png?fileID=2800000&amp;guid=ddf19cf741df321489867a2942c8e983&amp;type=3#load&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+                </ui:Button>
+                <ui:Button display-tooltip-when-elided="true" focusable="false" name="NewObject" class="scu-button" style="display: flex; width: 64px; height: 64px;">
+                    <ui:VisualElement style="background-image: url(&apos;project://database/Assets/new.png?fileID=2800000&amp;guid=9177d5cd18b6276498e0477ebdae3955&amp;type=3#new&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement>
+                <ui:Button display-tooltip-when-elided="true" focusable="false" name="Exit" class="scu-button" style="display: flex; width: 64px; height: 64px; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;);">
+                    <ui:VisualElement style="background-image: url(&apos;project://database/Assets/close.png?fileID=2800000&amp;guid=389e0a2d3f7a5cc4382cd0ac646c59b6&amp;type=3#close&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1; -unity-background-image-tint-color: rgb(154, 0, 0);" />
+                </ui:Button>
+            </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement style="flex-direction: column; align-items: stretch; justify-content: flex-start; width: 25%; background-image: url(&apos;/Assets/test9patch.png&apos;); -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4;">
-            <ui:Toggle label="Toggle" style="flex-wrap: nowrap;" />
+        <ui:VisualElement picking-mode="Ignore" style="flex-direction: row; flex-shrink: 1; flex-wrap: wrap; justify-content: space-between; align-items: stretch; width: 100%; height: 100%; flex-grow: 0;">
+            <ui:VisualElement style="width: 214px; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 9; -unity-slice-top: 9; -unity-slice-right: 9; -unity-slice-bottom: 9; padding-left: 8px; padding-right: 8px; padding-top: 5px; padding-bottom: 8px; height: 100%;">
+                <ui:VisualElement style="flex-direction: row; width: auto; flex-wrap: wrap; height: auto;">
+                    <ui:Button display-tooltip-when-elided="true" name="Brush" focusable="false" class="scu-button" style="width: 64px; height: 64px;">
+                        <ui:VisualElement style="background-image: url(&apos;project://database/Assets/brush.png?fileID=2800000&amp;guid=f36676a5e1940604d812665828f11c60&amp;type=3#brush&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="Eraser" focusable="false" class="scu-button" style="width: 64px; height: 64px;">
+                        <ui:VisualElement style="background-image: url(&apos;project://database/Assets/eraiser.png?fileID=2800000&amp;guid=f7d7abd81352bb94bb32069ba0a54023&amp;type=3#eraiser&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="Picker" focusable="false" class="scu-button" style="width: 64px; height: 64px;">
+                        <ui:VisualElement style="background-image: url(&apos;project://database/Assets/picker.png?fileID=2800000&amp;guid=2f173af4eddfd2041a55dc607e5dfc3f&amp;type=3#picker&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:Label text="Palette" display-tooltip-when-elided="true" />
+                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" style="flex-grow: 1;">
+                    <ui:VisualElement name="Palette" style="flex-direction: row; flex-wrap: wrap; justify-content: flex-start;">
+                        <ui:Button display-tooltip-when-elided="true" name="New" focusable="false" class="scu-button" style="width: 48px; height: 48px; background-image: none; background-color: rgba(188, 188, 188, 0);">
+                            <ui:VisualElement style="background-image: url(&apos;project://database/Assets/new.png?fileID=2800000&amp;guid=9177d5cd18b6276498e0477ebdae3955&amp;type=3#new&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+                        </ui:Button>
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-direction: column; align-items: stretch; justify-content: flex-start; width: 20%; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=21300000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4; height: 100%;">
+                <ui:Foldout text="Foldout" value="false">
+                    <ui:Button text="Button" display-tooltip-when-elided="true" />
+                    <ui:Button text="Button" display-tooltip-when-elided="true" />
+                    <ui:Button text="Button" display-tooltip-when-elided="true" />
+                </ui:Foldout>
+                <ui:Foldout text="Foldout" value="false">
+                    <ui:Button text="Button" display-tooltip-when-elided="true" />
+                    <ui:Button text="Button" display-tooltip-when-elided="true" />
+                    <ui:Button text="Button" display-tooltip-when-elided="true" />
+                </ui:Foldout>
+            </ui:VisualElement>
         </ui:VisualElement>
+        <Game.UI.ColorPicker name="ColorPicker" style="width: 235px; height: 235px; position: absolute; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4; left: 227px; top: 124px; display: flex; visibility: hidden; padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px;">
+            <ui:Button display-tooltip-when-elided="true" name="ClosePicker" focusable="false" class="scu-button" style="margin-left: 4px; flex-shrink: 1; width: 40px; height: 40px; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 9; -unity-slice-top: 9; -unity-slice-right: 9; -unity-slice-bottom: 9; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255);">
+                <ui:VisualElement style="width: 100%; height: 100%; background-image: url(&apos;project://database/Assets/close.png?fileID=2800000&amp;guid=389e0a2d3f7a5cc4382cd0ac646c59b6&amp;type=3#close&apos;); -unity-background-image-tint-color: rgb(178, 0, 0);" />
+            </ui:Button>
+            <ui:Button text="D" display-tooltip-when-elided="true" name="DeleteColor" focusable="false" class="scu-button" style="margin-left: 4px; flex-shrink: 1; width: 40px; height: 40px; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4;">
+                <ui:VisualElement />
+            </ui:Button>
+        </Game.UI.ColorPicker>
     </ui:VisualElement>
 </ui:UXML>
