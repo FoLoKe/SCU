@@ -1,18 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.BlueprintUtils
 {
+    [Serializable]
     public class Cell
     {
+        [SerializeField]
         private int _hp = 10;
+
+        [SerializeField]
         public int X;
+
+        [SerializeField]
         public int Y;
+
+        [SerializeField]
         public Color32 Color;
+
         //public Module module;
 
         ////////////////////////
@@ -25,6 +30,8 @@ namespace Assets.BlueprintUtils
         //          14  
         //
         //////////////////////////
+        
+        [NonSerialized]
         public int state;
 
         public Cell(int x, int y, Color32 color)
@@ -57,5 +64,7 @@ namespace Assets.BlueprintUtils
                 return cell.X == X && cell.Y == Y;
             }
         }
+
+        public override int GetHashCode() => (X, Y).GetHashCode();
     }
 }

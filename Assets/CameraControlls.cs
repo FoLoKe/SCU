@@ -38,14 +38,11 @@ public class CameraControlls : MonoBehaviour
         {
             _isDragging = false;
         }
-
-        
         
         zoom = zoomInput.ReadValue<float>() * 0.005f;
     }
 
     private void FixedUpdate() {
-        Debug.Log(Mouse.current.scroll.ReadValue().y);
         var position = transform.localPosition;
 
         if (_isDragging)

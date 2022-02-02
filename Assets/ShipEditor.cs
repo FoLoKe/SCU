@@ -4,28 +4,43 @@ using UnityEngine.UIElements;
 using Assets.BlueprintUtils;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using System.Collections;
+using System.IO;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using System.Collections.Generic;
 
 public class ShipEditor : MonoBehaviour
 {
-    public BlueprintComponent Blueprint;
-    public UIDocument UIDoc;
-    public PlayerInput PlayerInput;
+    public BlueprintComponent BlueprintComp; // OBJECT TO EDIT
+    public UIDocument UIDoc; // EDITOR UI DOC
+    public PlayerInput PlayerInput; // INPUT CONTROLLER
 
     //private Blueprint _module;
 
-    private ColorPicker colorPicker;
+    // TOOLS
     private Button brushButton;
     private Button eraiserButton;
     private Button pickerButton;
-    private VisualElement palette;
 
-    private enum Tool {Brush, Eraser, Picker, None}; //Editor tools types
-
+    private enum Tool { Brush, Eraser, Picker, None }; //Editor tools types
     private Tool tool = Tool.None; //Tool to use on left click
     private Tool selectedTool = Tool.Brush; //Tool selected on the left panel
 
+    // PALETTE
+    private ColorPicker colorPicker;
+    private VisualElement palette;
+
     private PaintButton selectedPaint; //Paint selected for the brush
 
+    // SAVE DIALOG
+    private VisualElement saveConfirm;
+    private Label saveLabel;
+    private TextField saveNameField;
+
+    private bool saveExistsChecked;
+
+    // INPUT
     private InputAction brushShortcut;
     private InputAction pickerShortcut;
     private InputAction eraserShortcut;
@@ -35,8 +50,13 @@ public class ShipEditor : MonoBehaviour
 
     private InputAction clickInput;
 
+    // STYLE
     private Color focusColor = Color.white;
     private Color unfocusColor = new(0, 0, 0, 0);
+
+    // TESTING
+    AsyncOperationHandle<IList<TextAsset>> loadHandle;
+    public List<string> keys = new List<string>() { "ships" };
 
     // Start is called before the first frame update
     void Start()
@@ -55,12 +75,39 @@ public class ShipEditor : MonoBehaviour
         eraserQuickShortcut = PlayerInput.actions["QuickEraser"];
 
         clickInput = PlayerInput.actions["Click"];
+
+        StartCoroutine(LoadFromAddressable("ships"));
     }
 
     private void OnEnable() 
     {
         var root = UIDoc.rootVisualElement;
-        
+
+        // CONTROLS 
+        var saveBlueprint = root.contentContainer.Q<Button>("SaveBP");
+        saveBlueprint.clicked += () => OnSaveBlueprint();
+
+        var loadBlueprint = root.contentContainer.Q<Button>("LoadBP");
+        loadBlueprint.clicked += () => OnLoadBlueprint();
+
+        var newBlueprint = root.contentContainer.Q<Button>("NewBP");
+        newBlueprint.clicked += () => OnNewBlueprint();
+
+        var closeEditor = root.contentContainer.Q<Button>("Close");
+        closeEditor.clicked += () => OnCloseEditor();
+
+        // SAVE
+        saveConfirm = root.Q<VisualElement>("SaveConfirmLayer");
+
+        var saveConfirmButton = saveConfirm.Q<Button>("ConfirmSave");
+        saveConfirmButton.clicked += () => OnSaveConfirm();
+
+        var saveCancelButton = saveConfirm.Q<Button>("CancelSave");
+        saveCancelButton.clicked += () => OnSaveCancel();
+
+        saveLabel = root.Q<Label>("SaveConfirmLabel");
+        saveNameField = root.Q<TextField>("SaveName");
+
         // TOOLS
         brushButton = root.Q<Button>("Brush");
         brushButton.clicked += () => OnToolChange(Tool.Brush);
@@ -92,7 +139,7 @@ public class ShipEditor : MonoBehaviour
         SelectButton(paintButton);
     }
 
-    // EVENT HANDLERS
+    // UI EVENT HANDLERS
     private void OnToolChange(Tool newTool)
     {
         ChangeTool(newTool);
@@ -119,6 +166,44 @@ public class ShipEditor : MonoBehaviour
         ChangePaintColor(colorPicker.Color);
     }
 
+    private void OnCloseEditor()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void OnNewBlueprint()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void OnLoadBlueprint()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void OnSaveBlueprint()
+    {
+        OpenSaveConfirmDialog();
+    }
+
+    private void OnSaveCancel()
+    {
+        CloseSaveConfirm();
+    }
+
+    private void OnSaveConfirm()
+    {
+        if (!IsSaveExits(saveNameField.text) || saveExistsChecked && BlueprintComp.bp.Name == saveNameField.text)
+        {
+            SaveBlueprint();
+            CloseSaveConfirm();
+        }
+        else //mark as checked
+        {
+            MarkExistanceForSaveDiaolg();
+        }
+    }
+
     private void OnPaintChange(ClickEvent click)
     {
         var paintButton = (PaintButton)click.currentTarget;
@@ -132,8 +217,8 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
-    // UI Functions
-    // leaving them separate from handlers for re-usability
+    // EDITOR FUNCTIONS
+    // leaving them separate from UI HANDLERS for re-usability
     private void ClosePicker()
     {
         if (colorPicker.visible)
@@ -250,6 +335,50 @@ public class ShipEditor : MonoBehaviour
         //deleteColorButton.visible = enabled;
     }
 
+    private IEnumerator LoadFromAddressable(string key)
+    {
+        loadHandle = Addressables.LoadAssetsAsync<TextAsset>(
+            keys,
+            addressable => {
+                Debug.Log(addressable.text);
+            }, Addressables.MergeMode.Union, 
+            false);
+
+        yield return loadHandle;
+    }
+
+    private void SaveBlueprint()
+    {
+        BlueprintComp.bp.Name = saveNameField.text;
+        if (BlueprintComp.TryGetSaveData(out var json))
+        {
+            File.WriteAllText(Application.persistentDataPath + "/" + BlueprintComp.bp.Name + ".json", json);
+            Debug.Log("Saved to: " + Application.persistentDataPath + "/" + BlueprintComp.bp.Name + ".json");
+        }
+    }
+
+    private void CloseSaveConfirm()
+    {
+        saveConfirm.visible = false;
+    }
+
+    private void OpenSaveConfirmDialog()
+    {
+        saveExistsChecked = false;
+        saveLabel.text = "Save changes to this blueprint?";
+        saveLabel.style.color = Color.white;
+        saveNameField.SetValueWithoutNotify(BlueprintComp.bp.Name);
+        saveConfirm.visible = true;
+    }
+
+    private void MarkExistanceForSaveDiaolg()
+    {
+        BlueprintComp.bp.Name = saveNameField.text;
+        saveLabel.text = BlueprintComp.bp.Name + " Exists! Overwrite?";
+        saveLabel.style.color = Color.red;
+        saveExistsChecked = true;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -276,7 +405,7 @@ public class ShipEditor : MonoBehaviour
             var mousePos = Pointer.current.position;
             var cam = Camera.main;
             var point = cam.ScreenToWorldPoint(new Vector3(mousePos.x.ReadValue(), mousePos.y.ReadValue(), -cam.transform.position.z));
-            var bpPoint = Blueprint.WorldPointToBlueprint(point);
+            var bpPoint = BlueprintComp.WorldPointToBlueprint(point);
 
             // PIXEL CHANGING
             if (true) // TODO
@@ -284,10 +413,10 @@ public class ShipEditor : MonoBehaviour
                 switch (tool)
                 {
                     case Tool.Eraser:
-                        Blueprint.RemoveCell(bpPoint.x, bpPoint.y);
+                        BlueprintComp.RemoveCell(bpPoint.x, bpPoint.y);
                         break;
                     case Tool.Picker:
-                        if (Blueprint.TryGetCell(bpPoint.x, bpPoint.y, out var cell))
+                        if (BlueprintComp.TryGetCell(bpPoint.x, bpPoint.y, out var cell))
                         {
                             selectedPaint.Color = cell.Color;
                             if (colorPicker.visible)
@@ -295,7 +424,7 @@ public class ShipEditor : MonoBehaviour
                         }
                         break;
                     case Tool.Brush:
-                        Blueprint.SetCell(bpPoint.x, bpPoint.y, selectedPaint.Color);
+                        BlueprintComp.SetCell(bpPoint.x, bpPoint.y, selectedPaint.Color);
                         break;
                 }
             }
@@ -304,5 +433,10 @@ public class ShipEditor : MonoBehaviour
 
             }
         }
+    }
+
+    private bool IsSaveExits(string saveName)
+    {
+        return File.Exists(Application.persistentDataPath + "/" + saveName + ".json");
     }
 }

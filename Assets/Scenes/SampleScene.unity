@@ -704,7 +704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d97ffd456ceb1cd40acaa0adfac62473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Blueprint: {fileID: 1928232039}
+  BlueprintComp: {fileID: 1928232039}
   UIDoc: {fileID: 2099472713}
   PlayerInput: {fileID: 1708230252}
 --- !u!1 &1419195420
@@ -908,18 +908,6 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 64058fe1-2919-443e-b3c1-8f79a6995751
-    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: aab980de-6a94-4799-aa1d-1ae8ed93a8c0
-    m_ActionName: Player/Look[/Mouse/delta]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 4c3711ce-e253-460f-a04d-990dfa255879
-    m_ActionName: Player/Fire[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 5c2b9241-fab2-4841-9cbb-60617b6975e8
     m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   - m_PersistentCalls:
@@ -982,9 +970,33 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: ff14f972-3fdb-44b2-8f31-4140ffd22bc0
     m_ActionName: Player/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8a9b68a0-47d9-43f6-994c-e23685dd3d95
+    m_ActionName: Editor/RightClick[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 185474c2-9788-4ede-b295-9642e19e70e6
+    m_ActionName: Editor/Zoom[/Mouse/scroll/y]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e411189b-c7a3-4927-95c9-a7fef76f0b8d
+    m_ActionName: Ship/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d1d07b11-431c-40b7-838f-cfe67cc09e87
+    m_ActionName: Ship/Fire[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 25366158-0711-4f2a-a482-0a07dba4d427
+    m_ActionName: Ship/Look[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d374cd17-1b62-4844-9587-5a70395f0e87
+    m_ActionName: Ship/Damping[/Keyboard/x]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: Editor
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!1 &1882117657
@@ -1131,10 +1143,6 @@ MonoBehaviour:
   SpriteRenderer: {fileID: 1928232038}
   debrisPref: {fileID: 0}
   texture: {fileID: 0}
-  bp:
-    Name: Unnamed
-    sizeX: 8
-    sizeY: 8
   sizeX: 0
   sizeY: 0
 --- !u!1 &2099472712

@@ -710,9 +710,16 @@ namespace Assets.BlueprintUtils
             //Debug.Log("CARGO: " + cargo);
         }
 
-        public void Save()
+        public bool TryGetSaveData(out string? json)
         {
+            if (bp != null)
+            {
+                json = bp.GetSaveData();
+                return true;
+            }
 
+            json = null;
+            return false;
         }
 
         //private Dictionary<Module, List<Cell>> modules = new Dictionary<Module, List<Cell>>();
