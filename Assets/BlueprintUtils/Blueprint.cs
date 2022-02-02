@@ -18,11 +18,11 @@ namespace Assets.BlueprintUtils
         [SerializeField] 
         private List<Cell> cellsSeria = null;
 
-        [SerializeField]
+        [NonSerialized]
         public Cell[,] cells = null;
 
-        [SerializeField]
-        public Cell debugCell = new Cell(0, 0, new Color32(1, 1, 1, 1));
+        [NonSerialized]
+        private static Color s_transparent = new Color(0, 0, 0, 0);
 
         public Blueprint()
         {
@@ -67,6 +67,31 @@ namespace Assets.BlueprintUtils
         public string GetSaveData()
         {
             return JsonUtility.ToJson(this);
+        }
+
+        internal Texture2D GetTexture()
+        {
+            Texture2D texture = new Texture2D(sizeX, sizeY);
+            texture.filterMode = FilterMode.Point;
+
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    if (cells[x, y] != null)
+                    {
+                        texture.SetPixel(x, y, cells[x, y].Color);
+                    }
+                    else
+                    {
+                        texture.SetPixel(x, y, s_transparent);
+                    }
+                }
+            }
+
+            texture.Apply();
+
+            return texture;
         }
     }
 }

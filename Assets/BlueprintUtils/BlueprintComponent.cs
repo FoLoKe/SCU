@@ -129,27 +129,14 @@ namespace Assets.BlueprintUtils
 
         private void CellsToTexture()
         {
-
-            texture = new Texture2D(bp.sizeX, bp.sizeY);
-            texture.filterMode = FilterMode.Point;
-            GetComponent<Renderer>().material.mainTexture = texture;
-
-            for (int y = 0; y < bp.sizeY; y++)
+            if (texture != null)
             {
-                for (int x = 0; x < bp.sizeX; x++)
-                {
-                    if (bp.cells[x, y] != null)
-                    {
-                        texture.SetPixel(x, y, bp.cells[x, y].Color);
-                    }
-                    else
-                    {
-                        texture.SetPixel(x, y, s_transparent);
-                    }
-                }
+                Destroy(texture);
+                texture = null;
             }
 
-            texture.Apply();
+            texture = bp.GetTexture();
+            GetComponent<Renderer>().material.mainTexture = texture;
         }
 
         //TODO: MOVE TO THE SHIP 
@@ -338,6 +325,13 @@ namespace Assets.BlueprintUtils
 
             var bp = WorldPointToBlueprint(point);
             //ApplyDamage(bp.x, bp.y, 100);
+        }
+
+        internal void SetBlueprint(Blueprint blueprint)
+        {
+            bp = blueprint;
+            CellsToTexture();
+            SpriteRenderer.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         }
 
         public Vector2Int WorldPointToBlueprint(Vector3 point)

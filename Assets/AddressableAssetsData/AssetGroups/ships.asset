@@ -17,8 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 703a62418a36ed34b886ecadf1266ee4
   m_SerializeEntries:
-  - m_GUID: e1541f8410be38c47863e57c146e5e6f
-    m_Address: Assets/BlueprintUtils/debug.json
+  - m_GUID: db4e8b21f221e3047b3f1be88d3b870b
+    m_Address: Assets/BlueprintUtils/optimized.json
     m_ReadOnly: 0
     m_SerializedLabels:
     - ships

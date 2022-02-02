@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="width: 80%; height: 80%; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; position: relative; left: 10%; top: 10%; right: 10%; bottom: 10%; align-items: center;">
+        <ui:Label text="Blueprint load" display-tooltip-when-elided="true" style="font-size: 20px; color: rgb(255, 255, 255); align-items: stretch;" />
+        <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" vertical-scroller-visibility="AlwaysVisible" name="ScrollPane" style="flex-grow: 0; width: 100%; margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; height: 100%;" />
+        <ui:VisualElement style="width: 100%; flex-direction: row; justify-content: space-between; height: 64px; flex-shrink: 0;">
+            <ui:Button display-tooltip-when-elided="true" name="ConfirmLoad" style="width: 64px; height: 64px; -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
+                <ui:VisualElement style="width: 100%; height: 100%; background-image: url(&apos;project://database/Assets/load.png?fileID=2800000&amp;guid=ddf19cf741df321489867a2942c8e983&amp;type=3#load&apos;);" />
+            </ui:Button>
+            <ui:Button display-tooltip-when-elided="true" name="CancelLoad" style="width: 64px; height: 64px; background-image: url(&apos;project://database/Assets/test9patch.png?fileID=2800000&amp;guid=d07c6293003c91a408f634dfc55cb702&amp;type=3#test9patch&apos;); -unity-slice-left: 4; -unity-slice-top: 4; -unity-slice-right: 4; -unity-slice-bottom: 4; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
+                <ui:VisualElement style="background-image: url(&apos;project://database/Assets/close.png?fileID=2800000&amp;guid=389e0a2d3f7a5cc4382cd0ac646c59b6&amp;type=3#close&apos;); width: 100%; height: 100%; -unity-background-image-tint-color: rgb(149, 0, 0);" />
+            </ui:Button>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

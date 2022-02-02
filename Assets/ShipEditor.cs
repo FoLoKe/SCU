@@ -34,11 +34,18 @@ public class ShipEditor : MonoBehaviour
     private PaintButton selectedPaint; //Paint selected for the brush
 
     // SAVE DIALOG
-    private VisualElement saveConfirm;
+    private VisualElement saveDialog;
     private Label saveLabel;
     private TextField saveNameField;
 
     private bool saveExistsChecked;
+
+    // LOAD DIALOG
+    private VisualElement loadDialog;
+    private ScrollView loadScrollPane;
+
+    private LoadEntry selectedLaodEntry;
+    private Button confirmLoadButton;
 
     // INPUT
     private InputAction brushShortcut;
@@ -75,8 +82,6 @@ public class ShipEditor : MonoBehaviour
         eraserQuickShortcut = PlayerInput.actions["QuickEraser"];
 
         clickInput = PlayerInput.actions["Click"];
-
-        StartCoroutine(LoadFromAddressable("ships"));
     }
 
     private void OnEnable() 
@@ -85,28 +90,38 @@ public class ShipEditor : MonoBehaviour
 
         // CONTROLS 
         var saveBlueprint = root.contentContainer.Q<Button>("SaveBP");
-        saveBlueprint.clicked += () => OnSaveBlueprint();
+        saveBlueprint.clicked += () => OnSave();
 
         var loadBlueprint = root.contentContainer.Q<Button>("LoadBP");
-        loadBlueprint.clicked += () => OnLoadBlueprint();
+        loadBlueprint.clicked += () => OnLoad();
 
         var newBlueprint = root.contentContainer.Q<Button>("NewBP");
         newBlueprint.clicked += () => OnNewBlueprint();
 
         var closeEditor = root.contentContainer.Q<Button>("Close");
-        closeEditor.clicked += () => OnCloseEditor();
+        closeEditor.clicked += () => OnEditorClose();
 
         // SAVE
-        saveConfirm = root.Q<VisualElement>("SaveConfirmLayer");
+        saveDialog = root.Q<VisualElement>("SaveConfirmLayer");
 
-        var saveConfirmButton = saveConfirm.Q<Button>("ConfirmSave");
+        var saveConfirmButton = saveDialog.Q<Button>("ConfirmSave");
         saveConfirmButton.clicked += () => OnSaveConfirm();
 
-        var saveCancelButton = saveConfirm.Q<Button>("CancelSave");
+        var saveCancelButton = saveDialog.Q<Button>("CancelSave");
         saveCancelButton.clicked += () => OnSaveCancel();
 
         saveLabel = root.Q<Label>("SaveConfirmLabel");
         saveNameField = root.Q<TextField>("SaveName");
+
+        // LOAD
+        loadDialog = root.Q<VisualElement>("LoadDialogLayer");
+        loadScrollPane = loadDialog.Q<ScrollView>("ScrollPane");
+
+        confirmLoadButton = loadDialog.Q<Button>("ConfirmLoad");
+        confirmLoadButton.clicked += () => OnLoadConfirm(); 
+
+        var cancelLoadButton = loadDialog.Q<Button>("CancelLoad");
+        cancelLoadButton.clicked += () => OnLoadCancel();
 
         // TOOLS
         brushButton = root.Q<Button>("Brush");
@@ -123,20 +138,20 @@ public class ShipEditor : MonoBehaviour
         colorPicker.colorChangeEvent.AddListener(OnColorChanged);
 
         var closePicker = colorPicker.Q<Button>("ClosePicker");
-        closePicker.clicked += OnClosePicker;
+        closePicker.clicked += OnPickerClose;
 
         var deletePaint = colorPicker.Q<Button>("DeleteColor");
-        deletePaint.clicked += OnDeleteColor;
+        deletePaint.clicked += OnPaintDelete;
 
         // PAINT
         palette = root.Q<VisualElement>("Palette");
 
         var newPainButton = palette.Q<Button>("New");
-        newPainButton.clicked += OnCreateNewPaint;
+        newPainButton.clicked += OnPaintCreate;
 
-        var paintButton = CreateNewPaint();
+        var paintButton = CreatePaint();
         selectedPaint = paintButton;
-        SelectButton(paintButton);
+        SelectElement(paintButton);
     }
 
     // UI EVENT HANDLERS
@@ -145,20 +160,20 @@ public class ShipEditor : MonoBehaviour
         ChangeTool(newTool);
     }
 
-    private void OnDeleteColor()
+    private void OnPaintDelete()
     {
         DeletePaint();
         ClosePicker();
     }
 
-    private void OnClosePicker()
+    private void OnPickerClose()
     {
         ClosePicker();
     }
 
-    private void OnCreateNewPaint()
+    private void OnPaintCreate()
     {
-        CreateNewPaint();
+        CreatePaint();
     }
 
     private void OnColorChanged()
@@ -166,7 +181,7 @@ public class ShipEditor : MonoBehaviour
         ChangePaintColor(colorPicker.Color);
     }
 
-    private void OnCloseEditor()
+    private void OnEditorClose()
     {
         throw new System.NotImplementedException();
     }
@@ -176,12 +191,35 @@ public class ShipEditor : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
-    private void OnLoadBlueprint()
+    private void OnLoad()
     {
-        throw new System.NotImplementedException();
+        OpenLoadDialog();
     }
 
-    private void OnSaveBlueprint()
+    private void OnLoadEntrySelect(ClickEvent evt)
+    {
+        if (selectedLaodEntry != null)
+        {
+            DeselectElement(selectedLaodEntry);
+        }
+
+        selectedLaodEntry = evt.currentTarget as LoadEntry;
+        SelectElement(selectedLaodEntry);
+        confirmLoadButton.SetEnabled(true);
+    }
+
+    private void OnLoadCancel()
+    {
+        CloseLoadDialog();
+    }
+
+    private void OnLoadConfirm()
+    {
+        LoadBlueprint();
+        CloseLoadDialog();
+    }
+
+    private void OnSave()
     {
         OpenSaveConfirmDialog();
     }
@@ -239,7 +277,7 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
-    private PaintButton CreateNewPaint()
+    private PaintButton CreatePaint()
     {
         PaintButton paintButton = new();
 
@@ -247,7 +285,7 @@ public class ShipEditor : MonoBehaviour
 
         // I can't find += combination with ClickEvent :/
         paintButton.RegisterCallback<ClickEvent>(OnPaintChange);
-        DeselectButton(paintButton);
+        DeselectElement(paintButton);
 
         PrepareDeletePaintButton();
 
@@ -261,38 +299,38 @@ public class ShipEditor : MonoBehaviour
 
     private void UpdateToolSelection()
     {
-        DeselectButton(eraiserButton);
-        DeselectButton(brushButton);
-        DeselectButton(pickerButton);
+        DeselectElement(eraiserButton);
+        DeselectElement(brushButton);
+        DeselectElement(pickerButton);
 
         switch (tool)
         {
             case Tool.Eraser:
-                SelectButton(eraiserButton);
+                SelectElement(eraiserButton);
                 break;
             case Tool.Brush:
-                SelectButton(brushButton);
+                SelectElement(brushButton);
                 break;
             case Tool.Picker:
-                SelectButton(pickerButton);
+                SelectElement(pickerButton);
                 break;
         }
     }
 
-    private void SelectButton(Button button)
+    private void SelectElement(VisualElement elem)
     {
-        button.style.borderTopColor = focusColor;
-        button.style.borderBottomColor = focusColor;
-        button.style.borderLeftColor = focusColor;
-        button.style.borderRightColor = focusColor;
+        elem.style.borderTopColor = focusColor;
+        elem.style.borderBottomColor = focusColor;
+        elem.style.borderLeftColor = focusColor;
+        elem.style.borderRightColor = focusColor;
     }
 
-    private void DeselectButton(Button button)
+    private void DeselectElement(VisualElement elem)
     {
-        button.style.borderTopColor = unfocusColor;
-        button.style.borderBottomColor = unfocusColor;
-        button.style.borderLeftColor = unfocusColor;
-        button.style.borderRightColor = unfocusColor;
+        elem.style.borderTopColor = unfocusColor;
+        elem.style.borderBottomColor = unfocusColor;
+        elem.style.borderLeftColor = unfocusColor;
+        elem.style.borderRightColor = unfocusColor;
     }
 
     private void OpenPicker()
@@ -311,9 +349,9 @@ public class ShipEditor : MonoBehaviour
 
     private void SelectPaint(PaintButton newSelection)
     {
-        DeselectButton(selectedPaint);
+        DeselectElement(selectedPaint);
         selectedPaint = newSelection;
-        SelectButton(selectedPaint);
+        SelectElement(selectedPaint);
 
         if (colorPicker.visible)
         {
@@ -335,12 +373,48 @@ public class ShipEditor : MonoBehaviour
         //deleteColorButton.visible = enabled;
     }
 
+    private void OpenLoadDialog()
+    {
+        confirmLoadButton.SetEnabled(false);
+        loadDialog.visible = true;
+        
+        StartCoroutine(LoadFromAddressable("ships"));
+    }
+
+    private void CloseLoadDialog()
+    {
+        selectedLaodEntry = null;
+        loadScrollPane.Clear();
+        loadDialog.visible = false;
+        Addressables.Release(loadHandle);
+    }
+
+    private void LoadBlueprint()
+    {
+        if (BlueprintComp != null)
+        {
+            BlueprintComp.SetBlueprint(selectedLaodEntry.blueprint);
+        }
+        // Replace blueprint
+    }
+
+
+    // Function for async loading of addressable assets
     private IEnumerator LoadFromAddressable(string key)
     {
+        
         loadHandle = Addressables.LoadAssetsAsync<TextAsset>(
             keys,
             addressable => {
+                
                 Debug.Log(addressable.text);
+                var blueprint = JsonUtility.FromJson<Blueprint>(addressable.text);
+                var loadEntry = new LoadEntry(blueprint);
+
+                loadEntry.RegisterCallback<ClickEvent>(OnLoadEntrySelect);
+
+                loadScrollPane.Add(loadEntry);
+                
             }, Addressables.MergeMode.Union, 
             false);
 
@@ -359,7 +433,7 @@ public class ShipEditor : MonoBehaviour
 
     private void CloseSaveConfirm()
     {
-        saveConfirm.visible = false;
+        saveDialog.visible = false;
     }
 
     private void OpenSaveConfirmDialog()
@@ -368,7 +442,7 @@ public class ShipEditor : MonoBehaviour
         saveLabel.text = "Save changes to this blueprint?";
         saveLabel.style.color = Color.white;
         saveNameField.SetValueWithoutNotify(BlueprintComp.bp.Name);
-        saveConfirm.visible = true;
+        saveDialog.visible = true;
     }
 
     private void MarkExistanceForSaveDiaolg()

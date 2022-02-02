@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Assets.BlueprintUtils
 {
     [Serializable]
-    public class Cell
+    public class Cell : ISerializationCallbackReceiver
     {
         [SerializeField]
         private int _hp = 10;
@@ -15,8 +15,11 @@ namespace Assets.BlueprintUtils
         [SerializeField]
         public int Y;
 
-        [SerializeField]
+        [NonSerialized]
         public Color32 Color;
+
+        [SerializeField]
+        private uint c;
 
         //public Module module;
 
@@ -66,5 +69,21 @@ namespace Assets.BlueprintUtils
         }
 
         public override int GetHashCode() => (X, Y).GetHashCode();
+
+        public void OnBeforeSerialize()
+        {
+            c = Color.r;
+            c = (c << 8) + Color.g;
+            c = (c << 8) + Color.b;
+        }
+
+        public void OnAfterDeserialize()
+        {
+            var r = (byte)((c >> 16) & 0xFF);
+            var g = (byte)((c >> 8) & 0xFF);
+            var b = (byte)(c & 0xFF);
+            
+            Color = new Color32(r, g, b, 255);
+        }
     }
 }
