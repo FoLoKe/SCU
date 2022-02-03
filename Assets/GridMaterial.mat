@@ -116,7 +116,7 @@ Material:
     - Vector3_543292fd830e43df825a54092913628f: {r: 0, g: 0, b: 0, a: 0}
     - Vector3_872e4509ed84405dabe0d41de7d7ce09: {r: 0.25, g: 0.5, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Collision: {r: 482.68243, g: 219.35564, b: 0, a: 0}
+    - _Collision: {r: 417.5531, g: 208.1846, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}

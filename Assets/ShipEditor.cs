@@ -453,6 +453,7 @@ public class ShipEditor : MonoBehaviour
         saveExistsChecked = true;
     }
 
+    private bool pressed;
     // Update is called once per frame
     void Update()
     {
@@ -473,38 +474,54 @@ public class ShipEditor : MonoBehaviour
             UpdateToolSelection();
         }
 
-        if (clickInput.WasPerformedThisFrame() && !EventSystem.current.IsPointerOverGameObject())
+        if (!pressed && clickInput.WasPerformedThisFrame() && !EventSystem.current.IsPointerOverGameObject())
         {
-            
-            var mousePos = Pointer.current.position;
-            var cam = Camera.main;
-            var point = cam.ScreenToWorldPoint(new Vector3(mousePos.x.ReadValue(), mousePos.y.ReadValue(), -cam.transform.position.z));
-            var bpPoint = BlueprintComp.WorldPointToBlueprint(point);
+            Debug.Log("Pressed");
+            pressed = true;
+        }
 
-            // PIXEL CHANGING
-            if (true) // TODO
+        if (pressed)
+        {
+            pressed = false; // DRAG DISABLE BY DEFAULT
+
+            if (clickInput.IsPressed())
             {
-                switch (tool)
+                var mousePos = Pointer.current.position;
+                var cam = Camera.main;
+                var point = cam.ScreenToWorldPoint(new Vector3(mousePos.x.ReadValue(), mousePos.y.ReadValue(), -cam.transform.position.z));
+                var bpPoint = BlueprintComp.WorldPointToBlueprint(point);
+
+                // PIXEL CHANGING
+                if (true) // TODO
                 {
-                    case Tool.Eraser:
-                        BlueprintComp.RemoveCell(bpPoint.x, bpPoint.y);
-                        break;
-                    case Tool.Picker:
-                        if (BlueprintComp.TryGetCell(bpPoint.x, bpPoint.y, out var cell))
-                        {
-                            selectedPaint.Color = cell.Color;
-                            if (colorPicker.visible)
-                                colorPicker.Color = selectedPaint.Color;
-                        }
-                        break;
-                    case Tool.Brush:
-                        BlueprintComp.SetCell(bpPoint.x, bpPoint.y, selectedPaint.Color);
-                        break;
+                    switch (tool)
+                    {
+                        case Tool.Eraser:
+                            BlueprintComp.RemoveCell(bpPoint.x, bpPoint.y);
+                            pressed = true; // DRAG ENABLED
+                            break;
+                        case Tool.Picker:
+                            if (BlueprintComp.TryGetCell(bpPoint.x, bpPoint.y, out var cell))
+                            {
+                                selectedPaint.Color = cell.Color;
+                                if (colorPicker.visible)
+                                    colorPicker.Color = selectedPaint.Color;
+                            }
+                            break;
+                        case Tool.Brush:
+                            BlueprintComp.SetCell(bpPoint.x, bpPoint.y, selectedPaint.Color);
+                            pressed = true; // DRAG ENABLED
+                            break;
+                    }
+                }
+                else // INSTALLING MODULE
+                {
+
                 }
             }
-            else // INSTALLING MODULE
+            else
             {
-
+                Debug.Log("Released");
             }
         }
     }

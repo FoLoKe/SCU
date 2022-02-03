@@ -27,8 +27,10 @@ public class LoadEntry : VisualElement
 
     private void OnDetach(DetachFromPanelEvent evt)
     {
-        UnityEngine.Object.Destroy(texture);
-        texture = null;
+        if (texture != null) {
+            UnityEngine.Object.Destroy(texture);
+            texture = null;
+        }
     }
 
     public LoadEntry(Blueprint blueprint) : this()

@@ -7,7 +7,7 @@
         </ui:VisualElement>
         <ui:VisualElement style="width: 100%; height: 100%; flex-direction: row; justify-content: space-between; align-items: flex-end; flex-grow: 0; flex-shrink: 1; padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px;">
             <ui:Button display-tooltip-when-elided="true" name="ConfirmSave" class="scu-button" style="width: 64px; height: 64px;">
-                <ui:VisualElement style="background-image: url(&apos;project://database/Assets/save.png?fileID=2800000&amp;guid=0f12119de170bf1438cb028cb1ff0710&amp;type=3#save&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-and-crop;" />
+                <ui:VisualElement style="background-image: url(&apos;project://database/Assets/confirm.png?fileID=2800000&amp;guid=5832012d43814274f9b9ebb97862dca1&amp;type=3#confirm&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-and-crop; -unity-background-image-tint-color: rgba(13, 188, 1, 255);" />
             </ui:Button>
             <ui:Button display-tooltip-when-elided="true" name="CancelSave" class="scu-button" style="width: 64px; height: 64px;">
                 <ui:VisualElement style="background-image: url(&apos;project://database/Assets/close.png?fileID=2800000&amp;guid=389e0a2d3f7a5cc4382cd0ac646c59b6&amp;type=3#close&apos;); width: 100%; height: 100%; -unity-background-image-tint-color: rgb(147, 0, 0); -unity-background-scale-mode: scale-and-crop;" />

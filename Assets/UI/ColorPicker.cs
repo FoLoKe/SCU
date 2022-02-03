@@ -116,9 +116,9 @@ namespace Game.UI
 			gradientArea.Add(controlsContainter);
 
 			// rgb sliders
-			rSlider = new Slider();
-			gSlider = new Slider();
-			bSlider = new Slider();
+			rSlider = new Slider(0, 255);
+			gSlider = new Slider(0, 255);
+			bSlider = new Slider(0, 255);
 
 			rSlider.showInputField = true;
 			gSlider.showInputField = true;
