@@ -29,17 +29,27 @@ public class CameraControlls : MonoBehaviour
     {
         if (rightClickInput.WasPressedThisFrame())
         {
-            _isDragging = true;
-            var pos = Pointer.current.position;
-            _initialPos.Set(pos.x.ReadValue(), pos.y.ReadValue());
+            DragStarted();
         }
 
         if (rightClickInput.WasReleasedThisFrame())
         {
-            _isDragging = false;
+            DragEnd();
         }
         
         zoom = zoomInput.ReadValue<float>() * 0.005f;
+    }
+
+    public void DragStarted() 
+    {
+        _isDragging = true;
+        var pos = Pointer.current.position;
+        _initialPos.Set(pos.x.ReadValue(), pos.y.ReadValue());
+    }
+
+    public void DragEnd()
+    {
+        _isDragging = false;
     }
 
     private void FixedUpdate() {

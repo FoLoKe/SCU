@@ -15,15 +15,17 @@ public class ShipEditor : MonoBehaviour
     public BlueprintComponent BlueprintComp; // OBJECT TO EDIT
     public UIDocument UIDoc; // EDITOR UI DOC
     public PlayerInput PlayerInput; // INPUT CONTROLLER
-
+    public CameraControlls cameraControlls;
     //private Blueprint _module;
 
     // TOOLS
     private Button brushButton;
     private Button eraiserButton;
     private Button pickerButton;
+    private Button fillButton;
+    private Button moveButton;
 
-    private enum Tool { Brush, Eraser, Picker, None }; //Editor tools types
+    private enum Tool { Brush, Eraser, Picker, Move, Fill, None }; //Editor tools types
     private Tool tool = Tool.None; //Tool to use on left click
     private Tool selectedTool = Tool.Brush; //Tool selected on the left panel
 
@@ -42,7 +44,9 @@ public class ShipEditor : MonoBehaviour
 
     // LOAD DIALOG
     private VisualElement loadDialog;
-    private ScrollView loadScrollPane;
+    private TabbedPane loadTabbedPane;
+    private ScrollView builtInLoadPane;
+    private ScrollView customLoadPane;
 
     private LoadEntry selectedLaodEntry;
     private Button confirmLoadButton;
@@ -51,9 +55,13 @@ public class ShipEditor : MonoBehaviour
     private InputAction brushShortcut;
     private InputAction pickerShortcut;
     private InputAction eraserShortcut;
+    private InputAction moveShortcut;
+    private InputAction fillShortcut;
 
     private InputAction pickerQuickShortcut;
     private InputAction eraserQuickShortcut;
+    private InputAction moveQuickShortcut;
+    private InputAction fillQuickShortcut;
 
     private InputAction clickInput;
 
@@ -77,9 +85,19 @@ public class ShipEditor : MonoBehaviour
         eraserShortcut = PlayerInput.actions["Eraser"];
         eraserShortcut.performed += _ => OnToolChange(Tool.Eraser);
 
+        moveShortcut = PlayerInput.actions["Move"];
+        moveShortcut.performed += _ => OnToolChange(Tool.Move);
+
+        fillShortcut = PlayerInput.actions["Fill"];
+        fillShortcut.performed += _ => OnToolChange(Tool.Fill);
+
         pickerQuickShortcut = PlayerInput.actions["QuickPicker"];
 
         eraserQuickShortcut = PlayerInput.actions["QuickEraser"];
+
+        fillQuickShortcut = PlayerInput.actions["QuickFill"];
+
+        moveQuickShortcut = PlayerInput.actions["QuickMove"];
 
         clickInput = PlayerInput.actions["Click"];
     }
@@ -115,7 +133,15 @@ public class ShipEditor : MonoBehaviour
 
         // LOAD
         loadDialog = root.Q<VisualElement>("LoadDialogLayer");
-        loadScrollPane = loadDialog.Q<ScrollView>("ScrollPane");
+        loadTabbedPane = loadDialog.Q<TabbedPane>();
+
+        builtInLoadPane = new ScrollView();
+        builtInLoadPane.verticalScrollerVisibility = ScrollerVisibility.AlwaysVisible;
+        loadTabbedPane.AddTab(builtInLoadPane, "Default");
+
+        customLoadPane = new ScrollView();
+        customLoadPane.verticalScrollerVisibility = ScrollerVisibility.AlwaysVisible;
+        loadTabbedPane.AddTab(customLoadPane, "Custom");
 
         confirmLoadButton = loadDialog.Q<Button>("ConfirmLoad");
         confirmLoadButton.clicked += () => OnLoadConfirm(); 
@@ -132,6 +158,12 @@ public class ShipEditor : MonoBehaviour
 
         pickerButton = root.Q<Button>("Picker");
         pickerButton.clicked += () => OnToolChange(Tool.Picker);
+
+        fillButton = root.Q<Button>("Fill");
+        fillButton.clicked += () => OnToolChange(Tool.Fill);
+
+        moveButton = root.Q<Button>("Move");
+        moveButton.clicked += () => OnToolChange(Tool.Move);
 
         // COLOR PICKER
         colorPicker = root.Q<ColorPicker>();
@@ -231,9 +263,10 @@ public class ShipEditor : MonoBehaviour
 
     private void OnSaveConfirm()
     {
-        if (!IsSaveExits(saveNameField.text) || saveExistsChecked && BlueprintComp.bp.Name == saveNameField.text)
+        string folder = "ships";
+        if (!IsSaveExits(saveNameField.text, folder) || saveExistsChecked && BlueprintComp.bp.Name == saveNameField.text)
         {
-            SaveBlueprint();
+            SaveBlueprint(folder);
             CloseSaveConfirm();
         }
         else //mark as checked
@@ -302,6 +335,8 @@ public class ShipEditor : MonoBehaviour
         DeselectElement(eraiserButton);
         DeselectElement(brushButton);
         DeselectElement(pickerButton);
+        DeselectElement(fillButton);
+        DeselectElement(moveButton);
 
         switch (tool)
         {
@@ -313,6 +348,12 @@ public class ShipEditor : MonoBehaviour
                 break;
             case Tool.Picker:
                 SelectElement(pickerButton);
+                break;
+            case Tool.Fill:
+                SelectElement(fillButton);
+                break;
+            case Tool.Move:
+                SelectElement(moveButton);
                 break;
         }
     }
@@ -379,12 +420,14 @@ public class ShipEditor : MonoBehaviour
         loadDialog.visible = true;
         
         StartCoroutine(LoadFromAddressable("ships"));
+        StartCoroutine(LoadFromCustom("ships"));
     }
 
     private void CloseLoadDialog()
     {
         selectedLaodEntry = null;
-        loadScrollPane.Clear();
+        builtInLoadPane.Clear();
+        customLoadPane.Clear();
         loadDialog.visible = false;
         Addressables.Release(loadHandle);
     }
@@ -395,9 +438,7 @@ public class ShipEditor : MonoBehaviour
         {
             BlueprintComp.SetBlueprint(selectedLaodEntry.blueprint);
         }
-        // Replace blueprint
     }
-
 
     // Function for async loading of addressable assets
     private IEnumerator LoadFromAddressable(string key)
@@ -406,28 +447,55 @@ public class ShipEditor : MonoBehaviour
         loadHandle = Addressables.LoadAssetsAsync<TextAsset>(
             keys,
             addressable => {
-                
-                Debug.Log(addressable.text);
-                var blueprint = JsonUtility.FromJson<Blueprint>(addressable.text);
-                var loadEntry = new LoadEntry(blueprint);
-
-                loadEntry.RegisterCallback<ClickEvent>(OnLoadEntrySelect);
-
-                loadScrollPane.Add(loadEntry);
-                
+                var loadEntry = CreateLoadEntry(addressable.text);
+                builtInLoadPane.Add(loadEntry);
             }, Addressables.MergeMode.Union, 
             false);
 
         yield return loadHandle;
     }
 
-    private void SaveBlueprint()
+    private IEnumerator LoadFromCustom(string folder)
+    {
+        string path = Application.persistentDataPath + "/" + folder;
+        Debug.Log("started: " + path);
+
+        if (Directory.Exists(path))
+        {
+            foreach (var file in Directory.EnumerateFiles(path, "*.json"))
+            {
+                var json = File.ReadAllText(file);
+                var entry = CreateLoadEntry(json);
+                customLoadPane.Add(entry);
+                Debug.Log("Loaded: " + entry.blueprint.Name);
+                yield return null;
+            }
+        }
+    }
+
+    public LoadEntry CreateLoadEntry(string json)
+    {
+        var blueprint = JsonUtility.FromJson<Blueprint>(json);
+        var loadEntry = new LoadEntry(blueprint);
+
+        loadEntry.RegisterCallback<ClickEvent>(OnLoadEntrySelect);
+
+        return loadEntry;
+    }
+
+    private void SaveBlueprint(string folder)
     {
         BlueprintComp.bp.Name = saveNameField.text;
         if (BlueprintComp.TryGetSaveData(out var json))
         {
-            File.WriteAllText(Application.persistentDataPath + "/" + BlueprintComp.bp.Name + ".json", json);
-            Debug.Log("Saved to: " + Application.persistentDataPath + "/" + BlueprintComp.bp.Name + ".json");
+            string path = Application.persistentDataPath + "/" + folder;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            File.WriteAllText(path + "/" + BlueprintComp.bp.Name + ".json", json);
+            Debug.Log("Saved to: " + path + "/" + BlueprintComp.bp.Name + ".json");
         }
     }
 
@@ -467,6 +535,14 @@ public class ShipEditor : MonoBehaviour
         {
             newTool = Tool.Picker;
         }
+        else if (fillQuickShortcut.inProgress)
+        {
+            newTool = Tool.Fill;
+        }
+        else if (moveQuickShortcut.inProgress)
+        {
+            newTool = Tool.Move;
+        }
 
         if (newTool != tool)
         {
@@ -474,10 +550,15 @@ public class ShipEditor : MonoBehaviour
             UpdateToolSelection();
         }
 
-        if (!pressed && clickInput.WasPerformedThisFrame() && !EventSystem.current.IsPointerOverGameObject())
+        if (!pressed && clickInput.WasPressedThisFrame() && !EventSystem.current.IsPointerOverGameObject())
         {
             Debug.Log("Pressed");
             pressed = true;
+
+            if (tool == Tool.Move)
+            {
+                cameraControlls.DragStarted();
+            }
         }
 
         if (pressed)
@@ -512,6 +593,9 @@ public class ShipEditor : MonoBehaviour
                             BlueprintComp.SetCell(bpPoint.x, bpPoint.y, selectedPaint.Color);
                             pressed = true; // DRAG ENABLED
                             break;
+                        case Tool.Fill:
+                            BlueprintComp.FillCells(bpPoint.x, bpPoint.y, selectedPaint.Color);
+                            break;
                     }
                 }
                 else // INSTALLING MODULE
@@ -521,13 +605,23 @@ public class ShipEditor : MonoBehaviour
             }
             else
             {
-                Debug.Log("Released");
+                
             }
+        }
+
+        if (clickInput.WasReleasedThisFrame())
+        {
+            Debug.Log("Released");
+            cameraControlls.DragEnd();
         }
     }
 
-    private bool IsSaveExits(string saveName)
+    private bool IsSaveExits(string saveName, string folder)
     {
-        return File.Exists(Application.persistentDataPath + "/" + saveName + ".json");
+        string path = Application.persistentDataPath + "/" + folder;
+        if (!Directory.Exists(path))
+            return false;
+
+        return File.Exists(path + "/" + saveName + ".json");
     }
 }

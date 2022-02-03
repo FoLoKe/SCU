@@ -514,6 +514,11 @@ namespace Assets.BlueprintUtils
             UpdateCollider();
         }
 
+        internal void FillCells(int x, int y, Color color)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool TryGetCell(Vector2Int point, out Cell? cell)
         {
             return TryGetCell(point.x, point.y, out cell);
